@@ -1,0 +1,173 @@
+<html>
+    <head>
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/ratchet/2.0.2/css/ratchet.min.css" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/ratchet/2.0.2/js/ratchet.min.js"></script>
+        <title>Raffle picker</title>
+    </head>
+
+    <body onload="initialise()">
+      <header class="bar bar-nav">
+        <h1 class="title">Raffle Picker</h1>
+      </header>
+
+      <header class="bar bar-standard bar-header-secondary">
+        <button class="btn btn-primary pull-left" id="new_book_button">New Book</button>
+        <button class="btn btn-negative pull-right" id="reset_button">Reset</button>
+        <button class="btn btn-negative pull-right" id="restart_button">Restart</button>
+      </header>
+
+      <div class="content">
+        <div class="content-padded">
+          <div class="row">
+            <div class="col" style="text-align: center">Book colour</div>
+            <div class="col" style="text-align: center">First ticket</div>
+            <div class="col" style="text-align: center">Last ticket</div>
+          </div>
+          <div id="book_table"></div>
+
+        <!--Pick <input type="text" id="pick_n" value="1"> at once-->
+        <input type="hidden" id="pick_n" value="1">
+        <button class="btn btn-block btn-positive" id="go_button">Go</button>
+        <div id="total_output"></div>
+        <div id="output"></div>
+        </div>        
+      </div>
+    </body>
+</html>
+
+<script>
+var tickets;
+var pick;
+
+function initialise()
+{
+  document.getElementById("new_book_button").addEventListener("click",function(){new_book();});
+  document.getElementById("reset_button").addEventListener("click",function(){reset();});
+  document.getElementById("restart_button").addEventListener("click",function(){restart();});
+  document.getElementById("go_button").addEventListener("click",function(){go();});
+  reset(initialising=true);
+}
+
+function new_book()
+{
+  // Create a new row for a new ticket book
+  var row = document.createElement("div");
+  row.className = "row";
+
+  // Add book name text box
+  var book_col = document.createElement("div");
+  book_col.className = "col";
+  var book_input = document.createElement("input");
+  book_input.type="text";
+  book_col.appendChild(book_input);
+  row.appendChild(book_col);
+  
+  // Add start and end input boxes
+  for (var i = 0 ; i < 2 ; i++)
+  {
+    var col = document.createElement("div");
+    col.className = "col";
+    var input = document.createElement("input");
+    input.type="number";
+    input.value="1";
+    // Select all text on focus
+    input.addEventListener("click", function(){this.select();});
+    col.appendChild(input);
+    row.appendChild(col);
+  }
+
+  // Add the row
+  document.getElementById("book_table").appendChild(row);
+  // Move focus to new book name
+  book_input.focus();
+}
+
+function restart()
+{
+  tickets = [];
+  pick = 1;
+  document.getElementById("output").innerHTML = "";
+  document.getElementById("total_output").innerHTML = "";
+  document.getElementById("go_button").disabled = false;
+  document.getElementById("new_book_button").disabled = false;  
+  document.getElementById("restart_button").disabled = true;  
+  document.getElementById("book_table").disabled = false;  
+  // Enable all table elements
+  var inputs = document.getElementById("book_table").getElementsByTagName("input");
+  for(var i = 0; i < inputs.length; i++)
+  {
+    inputs[i].disabled = false;
+  }  
+}
+
+function reset(initialising)
+{
+  if (!initialising && !confirm("Are you sure?")) return;
+
+  var table = document.getElementById("book_table");
+  while (table.firstChild) {
+      table.removeChild(table.firstChild);
+  }
+  // Add one new book by default
+  new_book();
+
+  restart();  
+}
+
+function go()
+{
+  var output = document.getElementById("output");
+  var total_output = document.getElementById("total_output");
+  var table = document.getElementById("book_table");
+
+  // Go clicked for the first time - build tickets
+  if (tickets.length === 0)
+  {
+    document.getElementById("new_book_button").disabled = true;
+    document.getElementById("restart_button").disabled = false;
+    
+    // Disable all table elements
+    var inputs = document.getElementById("book_table").getElementsByTagName("input");
+    for(var i = 0; i < inputs.length; i++)
+    {
+      inputs[i].disabled = true;
+    }
+    for (var i = 0; i < table.childElementCount; i++)
+    {
+      var book  = table.childNodes[i].childNodes[0].childNodes[0].value;
+      var start = parseInt(table.childNodes[i].childNodes[1].childNodes[0].value);
+      var end   = parseInt(table.childNodes[i].childNodes[2].childNodes[0].value);
+
+      // Build tickets
+      for (var n = start; n < end + 1; n++)
+      {
+        tickets.push(book + " " + n.toString());
+      }
+    }
+    total_output.innerHTML = "<h4>Total tickets sold: " + tickets.length + "</h4>";
+    total_output.innerHTML += "<h4>Total strips sold: " + Math.floor(tickets.length / 5)+ "</h4>";
+  }
+
+  var pick_n = parseInt(document.getElementById("pick_n").value);
+  for (var n = 0; n < pick_n; n++)
+  {
+    // Pick a random ticket and remove it from the list
+    output.innerHTML = "<h4>Pick " + pick + ": " + tickets.splice(Math.floor(Math.random() * tickets.length), 1) + "</h4>" + output.innerHTML;
+    pick += 1;
+    if (tickets.length === 0)
+    {
+      document.getElementById("go_button").disabled = true;
+      break;
+    }
+  }
+}
+</script>
+
+<style type="text/css">
+@media (min-width: 30em) {
+    .row { width: 100%; display: table; table-layout: fixed; }
+    .col { display: table-cell; }
+}
+</style>
