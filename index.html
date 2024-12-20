@@ -10,15 +10,15 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/ratchet/2.0.2/js/ratchet.min.js"></script>
 
         <link rel="canonical" href="https://barrycohen.github.io/rafflepicker/" />
-        <link rel="manifest" href="/rafflepicker/manifest.json">        
+        <link rel="manifest" href="/rafflepicker/manifest.json">
     </head>
 
-    <body onload="initialise()">
-      <header class="bar bar-nav">
+    <body class="centered" onload="initialise()">
+      <header class="bar bar-nav centered">
         <h1 class="title">Raffle Picker</h1>
       </header>
 
-      <header class="bar bar-standard bar-header-secondary">
+      <header class="bar bar-standard bar-header-secondary centered">
         <button class="btn btn-primary pull-left" id="new_book_button">New Book</button>
         <button class="btn btn-negative pull-right" id="reset_button">Reset</button>
         <button class="btn btn-negative pull-right" id="restart_button">Restart</button>
@@ -38,7 +38,7 @@
         <button class="btn btn-block btn-positive" id="go_button">Go</button>
         <div id="total_output"></div>
         <div id="output"></div>
-        </div>        
+        </div>
       </div>
     </body>
 </html>
@@ -69,7 +69,7 @@ function new_book()
   book_input.type="text";
   book_col.appendChild(book_input);
   row.appendChild(book_col);
-  
+
   // Add start and end input boxes
   for (var i = 0 ; i < 2 ; i++)
   {
@@ -97,15 +97,15 @@ function restart()
   document.getElementById("output").innerHTML = "";
   document.getElementById("total_output").innerHTML = "";
   document.getElementById("go_button").disabled = false;
-  document.getElementById("new_book_button").disabled = false;  
-  document.getElementById("restart_button").disabled = true;  
-  document.getElementById("book_table").disabled = false;  
+  document.getElementById("new_book_button").disabled = false;
+  document.getElementById("restart_button").disabled = true;
+  document.getElementById("book_table").disabled = false;
   // Enable all table elements
   var inputs = document.getElementById("book_table").getElementsByTagName("input");
   for(var i = 0; i < inputs.length; i++)
   {
     inputs[i].disabled = false;
-  }  
+  }
 }
 
 function reset(initialising)
@@ -113,13 +113,14 @@ function reset(initialising)
   if (!initialising && !confirm("Are you sure?")) return;
 
   var table = document.getElementById("book_table");
-  while (table.firstChild) {
+  while (table.firstChild)
+  {
       table.removeChild(table.firstChild);
   }
   // Add one new book by default
   new_book();
 
-  restart();  
+  restart();
 }
 
 function go()
@@ -133,7 +134,7 @@ function go()
   {
     document.getElementById("new_book_button").disabled = true;
     document.getElementById("restart_button").disabled = false;
-    
+
     // Disable all table elements
     var inputs = document.getElementById("book_table").getElementsByTagName("input");
     for(var i = 0; i < inputs.length; i++)
@@ -172,8 +173,26 @@ function go()
 </script>
 
 <style type="text/css">
-@media (min-width: 30em) {
-    .row { width: 100%; display: table; table-layout: fixed; }
-    .col { display: table-cell; }
+body
+{
+  background-color: #eeeeee;
+}
+
+.centered
+{
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.row
+{
+  width: 100%;
+  display: table;
+  table-layout: fixed;
+}
+
+.col
+{
+  display: table-cell;
 }
 </style>
