@@ -1,0 +1,18 @@
+{
+  "name": "RafflePicker",
+  "short_name": "RafflePicker",
+  "icons": [
+    {
+      "src": "icon.png",
+      "type": "image/png",
+      "sizes": "300x226"
+    }
+  ],
+  "start_url": "/",
+  "theme_color": "#000000",
+  "background_color": "#000000",
+  "display_override": [
+    "fullscreen",
+    "window-controls-overlay"
+  ]
+}
